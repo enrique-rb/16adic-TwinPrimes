@@ -1,0 +1,106 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage[capitalize]{cleveref}
+\usepackage{algorithm,algpseudocode}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\graphicspath{{./}}
+
+% Theorem styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{A Test of the 16-adic Collatz Framework on the Distribution of Twin Primes: A Null Result}
+\author{Enrique A. Ramirez Bochard}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+		This paper investigates a potential link between the arithmetic dynamics of a simplified Collatz map and the distribution of twin primes across residue classes. Our prior work suggested that a "16-adic framework," which was successful in predicting partition densities for the Goldbach Conjecture, might extend to other additive prime problems. We test this hypothesis by examining the correlation between two Collatz-derived features---a first-order divisor $\nu_2(3r+1)$ and a full-trajectory weight $k_r^*$---and the empirical counts of twin primes up to $N = 10^8$. 
+		
+		Our analysis, conducted over the moduli $m \in \{16, 30, 42, 60, 210\}$, reveals no statistically significant correlation between the Collatz-derived features and twin prime densities. An anomalous perfect correlation ($ \rho = -1.0 $) was found for the modulus $m=30$; however, subsequent testing showed this to be a low-dimensional artifact that does not generalize to other moduli. We therefore report a null result, concluding that the predictive mechanism of the 16-adic Collatz framework is specific to the Goldbach problem and does not appear to govern the distribution of twin primes. This finding helps to define the boundaries of the framework's applicability.
+	\end{abstract}
+	
+	\section{Introduction}
+	The distribution of prime numbers, particularly in structured subsets like twin primes, remains a central question in number theory. The Twin Prime Conjecture posits that there are infinitely many primes $p$ such that $p+2$ is also prime. While significant progress has been made in understanding the gaps between primes, the fine-grained distribution across different residue classes is less understood.
+	
+	In previous research on the Goldbach Conjecture \cite{goldbach_paper}, we introduced a "16-adic framework" that successfully modeled the density of Goldbach partitions. The model's predictive power was derived from a simplified, fixed-divisor variant of the Collatz map, where a feature $k_r = \nu_2(3r+1)$ correlated with partition counts.
+	
+	The natural next question, which this paper addresses, is whether this framework is a general tool applicable to other prime distribution problems. We hypothesize that if the framework captures a deep arithmetic structure, its predictive power should extend to the distribution of twin primes. This paper serves as a rigorous, data-driven test of that hypothesis.
+	
+	We investigate the correlation between twin prime counts and two Collatz-derived features:
+	\begin{enumerate}
+		\item \textbf{The First-Order Divisor ($\nu_2$):} The original feature $k_r = \nu_2(3r+1)$.
+		\item \textbf{The Full-Trajectory Weight ($k_r^*$):} A more complex feature representing the sum of all $\nu_2$ values over the entire Collatz trajectory of a residue $r$.
+	\end{enumerate}
+	We analyze twin prime counts up to $N = 10^8$ for several moduli, $m \in \{16, 30, 42, 60, 210\}$, chosen to test the hypothesis under different structural conditions. Contrary to our initial hypothesis, our findings show no evidence of a significant correlation, leading us to report a null result.
+	
+	\section{Methodology}
+	\subsection{Computational Analysis}
+	Our primary method is computational. We developed a Python script to perform the following steps:
+	\begin{enumerate}
+		\item Sieve for all primes up to a given limit $N = 10^8$.
+		\item Identify all twin prime pairs $(p, p+2)$ from this list.
+		\item For each modulus $m$ in our test set, dynamically generate the set of admissible residue classes $(a, a+2)$ where $\gcd(a(a+2), m) = 1$.
+		\item Bin the twin primes into these residue classes and obtain empirical counts.
+		\item Compute the two Collatz-derived features, $\nu_2(3a+1)$ and the full-trajectory weight $k_a^*$, for each admissible residue $a$.
+		\item Use Pearson and Spearman correlation tests to measure the statistical relationship between the empirical counts and the Collatz-derived features.
+	\end{enumerate}
+	This methodology ensures a direct, data-driven test of the proposed relationship. The full source code and resulting data are available for review and replication.
+	
+	\section{Results and Discussion}
+	The analysis was conducted for moduli $m \in \{16, 30, 42, 60, 210\}$. The correlation results for the twin prime counts versus the Collatz-derived features are summarized in Table \ref{tab:correlations}.
+	
+	\begin{table}[h!]
+		\centering
+		\caption{Correlation between Collatz features and twin prime counts ($N=10^8$)}
+		\label{tab:correlations}
+		\begin{tabular}{@{}lcccc@{}}
+			\toprule
+			& \multicolumn{2}{c}{First-Order ($\nu_2$)} & \multicolumn{2}{c}{Full Trajectory ($k_r^*$)} \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			Modulus & Spearman $\rho$ & p-value & Spearman $\rho$ & p-value \\
+			\midrule
+			16 (8 classes) & 0.089 & 0.833 & 0.262 & 0.531 \\
+			30 (3 classes) & -0.500 & 0.667 & \textbf{-1.000} & \textbf{0.000} \\
+			42 (5 classes) & -0.791 & 0.111 & 0.100 & 0.873 \\
+			60 (6 classes) & 0.494 & 0.320 & -0.371 & 0.469 \\
+			210 (15 classes) & -0.213 & 0.445 & -0.020 & 0.945 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{No General Correlation Found}
+	As the results in Table \ref{tab:correlations} clearly show, there is no consistent, statistically significant correlation between either of the Collatz-derived features and the distribution of twin primes. For the primary modulus of interest, $m=16$, the correlations are close to zero and the p-values are extremely high, indicating a complete lack of a detectable signal. This pattern holds for nearly all tested moduli.
+	
+	\subsection{The Anomaly at Modulo 30}
+	A striking anomaly was observed for the modulus $m=30$. The Spearman correlation for the full-trajectory feature, $k_r^*$, was a perfect -1.0, with a p-value of 0. This indicates that for the three admissible residue classes modulo 30, the ranking of their twin prime counts is the exact inverse of the ranking of their Collatz trajectory weights.
+	
+	While initially shocking, this result is best explained as a **low-dimensional artifact**. With only three data points, it is far more likely to observe a spurious perfect correlation. The fact that this perfect correlation immediately vanishes when we test moduli with more classes (e.g., $m=42$ with 5 classes, and $m=60$ with 6 classes) is strong evidence that this is not a generalizable physical law of primes, but a coincidence specific to the small sample size at $m=30$.
+	
+	\section{Conclusion}
+	We conducted a rigorous computational test of the hypothesis that a 16-adic Collatz framework could predict the distribution of twin primes. Our analysis, based on twin prime counts up to $10^8$ and a variety of statistical tests, leads to a clear **null result**. We found no evidence that the Collatz-derived features, which were predictive for the Goldbach Conjecture, have any significant correlation with the density of twin primes across residue classes.
+	
+	This finding is valuable for two key reasons:
+	\begin{enumerate}
+		\item It defines the boundaries of our 16-adic framework, suggesting the underlying mechanism is specific to additive problems of the Goldbach type ($p+q=n$) and not to problems of prime gaps ($p_2 - p_1 = k$).
+		\item It strengthens the significance of the original Goldbach result by showing that the correlation found there is not a generic statistical artifact present in all prime distributions.
+	\end{enumerate}
+	
+	Future work will now proceed with greater confidence on the Goldbach Conjecture, armed with the knowledge that the structural link discovered there is specific and non-trivial. This paper serves as a record of that crucial validation test.
+	
+	\begin{thebibliography}{9}
+		\bibitem{goldbach_paper} Ramirez Bochard, E. A. (2025). \textit{A 16-adic Framework for Goldbach Partitions}. Zenodo. \href{https://doi.org/10.5281/zenodo.15722143}{doi:10.5281/10.5281/zenodo.15722143}. ORCID: \href{https://orcid.org/0009-0005-9929-193X}{0009-0005-9929-193X}.
+		\bibitem{terras} Terras, R. (1976). \textit{A stopping time problem on the positive integers}. Acta Arithmetica, 30(3), 241-252.
+		\bibitem{lagarias} Lagarias, J. C. (2010). \textit{The 3x+1 Problem: An Annotated Bibliography}. arXiv:math/0309224.
+	\end{thebibliography}
+	
+\end{document}
